@@ -12,7 +12,7 @@
       - yoel
 
   tasks:
-    - name: Install net-snmp package
+    - name: Install net-snmp package # Which called snmp in apt repo
       package:
         name: snmp
         state: present
