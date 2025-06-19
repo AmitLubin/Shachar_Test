@@ -90,21 +90,38 @@ pipeline {
             }
         }
 
-        stage('Run Task on ECS') {
+        stage('Create ECS Service') {
             steps {
                 script {
                     sh '''
-                        aws ecs run-task \
-                          --region il-central-1 \
-                          --cluster imtech \
-                          --launch-type FARGATE \
-                          --network-configuration "awsvpcConfiguration={subnets=[subnet-01e6348062924d048,subnet-088b7d937a4cd5d85],securityGroups=[sg-0ac3749215afde82a],assignPublicIp=ENABLED}" \
-                          --task-definition nginx-task
+                        aws ecs create-service \
+                        --region il-central-1 \
+                        --cluster imtech \
+                        --service-name nginx-service \
+                        --task-definition nginx-task \
+                        --desired-count 1 \
+                        --launch-type FARGATE \
+                        --network-configuration "awsvpcConfiguration={subnets=[subnet-01e6348062924d048,subnet-088b7d937a4cd5d85],securityGroups=[sg-0ac3749215afde82a],assignPublicIp=ENABLED}"
                     '''
                 }
             }
-
         }
+
+        stage('Update ECS Service') {
+            steps {
+                script {
+                    sh '''
+                        aws ecs update-service \
+                        --region il-central-1 \
+                        --cluster imtech \
+                        --service nginx-service \
+                        --task-definition nginx-task
+                    '''
+                }
+            }
+        }
+
+
     }
 
     post {
