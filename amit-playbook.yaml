@@ -1,0 +1,57 @@
+---
+- name: Setup net-snmp, users, and nginx
+  hosts: your-wanted-hosts
+  # hosts: localhost # for my local testing on WSL
+  # connection: local # for my local testing on WSL
+  become: yes
+  vars:
+    nginx_port: 8090
+    users_to_create:
+      - avi
+      - moshe
+      - yoel
+
+  tasks:
+    - name: Install net-snmp package
+      package:
+        name: snmp
+        state: present
+
+    - name: Create user accounts without home directories
+      user:
+        name: "{{ item }}"
+        create_home: no
+        shell: /bin/bash
+        state: present
+      loop: "{{ users_to_create }}"
+
+    - name: Install nginx
+      package:
+        name: nginx
+        state: present
+
+    - name: Configure nginx to run on port 8090
+      replace:
+        path: /etc/nginx/sites-available/default
+        regexp: 'listen 80'
+        replace: 'listen {{ nginx_port }}'
+      notify: restart nginx
+
+    - name: Configure nginx to run on port 8090 (IPv6)
+      replace:
+        path: /etc/nginx/sites-available/default
+        regexp: 'listen \[::\]:80'
+        replace: 'listen [::]:{{ nginx_port }}'
+      notify: restart nginx
+
+    - name: Ensure nginx is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: restart nginx
+      service:
+        name: nginx
+        state: restarted
