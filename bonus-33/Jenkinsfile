@@ -90,7 +90,21 @@ pipeline {
             }
         }
 
+        stage('Run Task on ECS') {
+            steps {
+                script {
+                    sh '''
+                        aws ecs run-task \
+                          --region il-central-1 \
+                          --cluster imtech \
+                          --launch-type FARGATE \
+                          --network-configuration "awsvpcConfiguration={subnets=[subnet-abc123,subnet-def456],securityGroups=[sg-xyz789],assignPublicIp=ENABLED}" \
+                          --task-definition nginx-task
+                    '''
+                }
+            }
 
+        }
     }
 
     post {
