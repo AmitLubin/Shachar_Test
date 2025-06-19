@@ -97,7 +97,7 @@ pipeline {
                         aws ecs create-service \
                         --region il-central-1 \
                         --cluster imtech \
-                        --service-name nginx-service \
+                        --service-name amit-nginx-service \
                         --task-definition nginx-task \
                         --desired-count 1 \
                         --launch-type FARGATE \
@@ -114,7 +114,7 @@ pipeline {
                         aws ecs update-service \
                         --region il-central-1 \
                         --cluster imtech \
-                        --service nginx-service \
+                        --service amit-nginx-service \
                         --task-definition nginx-task
                     '''
                 }
