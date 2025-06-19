@@ -98,7 +98,7 @@ pipeline {
                           --region il-central-1 \
                           --cluster imtech \
                           --launch-type FARGATE \
-                          --network-configuration "awsvpcConfiguration={subnets=[subnet-abc123,subnet-def456],securityGroups=[sg-xyz789],assignPublicIp=ENABLED}" \
+                          --network-configuration "awsvpcConfiguration={subnets=[subnet-01e6348062924d048,subnet-088b7d937a4cd5d85],securityGroups=[sg-0ac3749215afde82a],assignPublicIp=ENABLED}" \
                           --task-definition nginx-task
                     '''
                 }
